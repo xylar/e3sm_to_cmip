@@ -7,7 +7,6 @@ import numpy as np
 import xarray as xr
 from tqdm import tqdm
 
-from e3sm_to_cmip import resources
 from e3sm_to_cmip.mpas import write_netcdf
 from e3sm_to_cmip.util import (find_atm_files, find_mpas_files,
                                get_levgrnd_bnds, print_debug, print_message,
@@ -308,8 +307,8 @@ def handle_simple(infiles, raw_variables, write_data, outvar_name, outvar_units,
         ds['time'] = inputds['time']
         ds['time'].attrs['bounds'] = 'time_bnds'
 
-    resource_path, _ = os.path.split(os.path.abspath(resources.__file__))
-    table_path = os.path.join(resource_path, table)
+    table_root = os.environ['CMIP6_CMOR_TABLE_ROOT']
+    table_path = os.path.join(table_root, table)
     with open(table_path, 'r') as ip:
         table_data = json.load(ip)
 

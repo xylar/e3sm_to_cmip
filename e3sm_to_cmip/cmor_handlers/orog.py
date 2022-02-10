@@ -9,7 +9,6 @@ import logging
 import json
 import xarray as xr
 import numpy as np
-from e3sm_to_cmip import resources
 from e3sm_to_cmip.util import print_message
 from e3sm_to_cmip.lib import handle_variables
 from e3sm_to_cmip.mpas import write_netcdf
@@ -22,8 +21,8 @@ TABLE = str('CMIP6_fx.json')
 GRAV = 9.80616
 
 def handle_simple(infiles):
-    resource_path, _ = os.path.split(os.path.abspath(resources.__file__))
-    table_path = os.path.join(resource_path, TABLE)
+    table_root = os.environ['CMIP6_CMOR_TABLE_ROOT']
+    table_path = os.path.join(table_root, TABLE)
     with open(table_path, 'r') as ip:
         table_data = json.load(ip)
     

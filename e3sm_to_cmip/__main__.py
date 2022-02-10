@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-A python command line tool to turn E3SM model output into CMIP6 compatable data
+A python command line tool to turn E3SM model output into CMIP6 compatible data
 """
 
 from __future__ import absolute_import, division, print_function, unicode_literals
@@ -15,7 +15,6 @@ from e3sm_to_cmip.util import load_handlers
 from e3sm_to_cmip.util import print_var_info
 from e3sm_to_cmip.util import parse_arguments
 from e3sm_to_cmip.util import print_message
-from e3sm_to_cmip import resources
 from e3sm_to_cmip import cmor_handlers
 
 import os
@@ -64,10 +63,8 @@ def main():
     freq = _args.get('freq')
 
     if simple:
-        no_metadata = True
         if not tables_path:
-            resource_path, _ = os.path.split(os.path.abspath(resources.__file__))
-            tables_path = resource_path
+            tables_path = os.environ['CMIP6_CMOR_TABLE_ROOT']
 
     timer = None
     if timeout:

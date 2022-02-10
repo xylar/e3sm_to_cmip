@@ -6,7 +6,7 @@ import cmor
 import os
 import re
 import argparse
-import imp
+from importlib import resources, import_module
 import yaml
 import json
 import xarray as xr
@@ -14,7 +14,6 @@ import xarray as xr
 from pathlib import Path
 from pprint import pprint
 from tqdm import tqdm
-from e3sm_to_cmip import resources
 from e3sm_to_cmip.version import __version__
 
 
@@ -252,14 +251,10 @@ def print_var_info(handlers, freq=None, inpath=None, tables=None, outpath=None):
     
     elif freq and tables and inpath:
         file_path = next(Path(inpath).glob('*.nc'))
-        
-        resource_path, _ = os.path.split(os.path.abspath(resources.__file__))
-        defaults_path = os.path.join(
-            resource_path,
-            'default_handler_info.yaml')
-        
-        with open(defaults_path, 'r') as infile:
-            default_info = yaml.load(infile, Loader=yaml.SafeLoader)
+        with resources.path('e3sm_to_cmip.resources',
+                            'default_handler_info.yaml') as defaults_path:
+            with open(defaults_path, 'r') as infile:
+                default_info = yaml.load(infile, Loader=yaml.SafeLoader)
         
         
 
@@ -448,7 +443,7 @@ def load_handlers(handlers_path, var_list, tables, freq="mon", realm='atm', simp
         module_path = os.path.join(handlers_path, handler)
 
         # load the module, and extract the "handle" method and required variables
-        module = imp.load_source(module_name, module_path)
+        module = import_module(module_name, module_path)
 
         # pull the table name out from the format CMIP6_Amon.json
         if simple or freq == "mon":
